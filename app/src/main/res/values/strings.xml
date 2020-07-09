@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">CustomPopUp</string>
+    <string name="hello_world">Hello World</string>
+    <string name="show_pop_up">Show Pop-Up</string>
+    <string name="x">X</string>
+    <string name="lin_su">Lin Su</string>
+    <string name="new_york_united_states">New-York, United States</string>
+    <string name="_150">150</string>
+    <string name="followers">Followers</string>
+    <string name="follow_me">Follow Me</string>
+    <string name="posts">Posts</string>
+    <string name="_50">50</string>
+    <string name="cities">Cities</string>
+    <string name="_19">19</string>
+    <string name="image_of_the_uer">Image of the uer</string>
+</resources>
