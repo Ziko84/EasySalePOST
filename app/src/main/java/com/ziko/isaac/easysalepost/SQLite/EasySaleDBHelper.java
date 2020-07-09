@@ -21,10 +21,10 @@ public class EasySaleDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_EASYSALE_TABLE = "CREATE TABLE " +
                 EasySaleEntry.TABLE_NAME + " (" +
                 EasySaleEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                EasySaleEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                EasySaleEntry.COLUMN_IMAGE + " TEXT NOT NULL, " +
-                EasySaleEntry.COLUMN_PRICE + " INTEGER NOT NULL, " +
-                EasySaleEntry.COLUMN_QUANTITY + " INTEGER NOT NULL" +
+                EasySaleEntry.COLUMN_NAME + " TEXT, " +
+                EasySaleEntry.COLUMN_IMAGE + " TEXT, " +
+                EasySaleEntry.COLUMN_PRICE + " INTEGER, " +
+                EasySaleEntry.COLUMN_QUANTITY + " INTEGER" +
                 ");";
         db.execSQL(SQL_CREATE_EASYSALE_TABLE);
     }
