@@ -24,13 +24,6 @@
         android:text="@string/name_tv"
         android:textColor="@color/textColor"/>
 
-    <TextView
-        android:gravity="center_horizontal"
-        android:id="@+id/url_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/image_tv"
-        android:textColor="@color/textColor" />
 
     <TextView
         android:gravity="center_horizontal"

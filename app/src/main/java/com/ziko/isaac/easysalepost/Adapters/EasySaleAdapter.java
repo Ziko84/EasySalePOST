@@ -50,11 +50,11 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
         holder.price.setText(String.valueOf(price));
         holder.quantity.setText(String.valueOf(quantity));
 
-        if(!url.isEmpty()&&url!="null"){
+        if(!url.isEmpty()&& !url.equals("null")){
             Picasso.get().load(url).fit().centerInside().into(holder.item_iv);
         } else{
-            holder.item_iv.setImageResource(R.drawable.circlecropped3);
-            Toast.makeText(mContext, "Empty URL Detected", Toast.LENGTH_SHORT).show();
+            holder.item_iv.setImageResource(R.drawable.not_a);
+            Toast.makeText(mContext, "Detected an item without an image", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -65,7 +65,7 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
        return mCursor.getCount();
     }
 
-    public class EasySaleViewHolder extends RecyclerView.ViewHolder {
+    public static class EasySaleViewHolder extends RecyclerView.ViewHolder {
         public TextView name, price, quantity;
         public ImageView item_iv;
 

@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 null,
                 null,
                 null,
-                EasySaleContract.EasySaleEntry.COLUMN_PRICE + " DESC"
+                null
         );
     }
 
