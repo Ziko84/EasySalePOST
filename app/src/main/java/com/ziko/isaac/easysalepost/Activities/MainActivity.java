@@ -110,17 +110,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             for (int i = 0; i < item_list2.length(); i++) {
 
                 String item_name = item_list2.getJSONObject(i).getString("item_name");
-                String item_extended_description = item_list2.getJSONObject(i).getString("item_extended_description");
                 String picture_link = item_list2.getJSONObject(i).getString("picture_link");
                 int sale_nis = item_list2.getJSONObject(i).getInt("sale_nis");
                 int quantity = item_list2.getJSONObject(i).getInt("quantity");
-
-
             }
-
-
         } catch (JSONException e) {
-            Toast.makeText(this, "Problem finding this 'Key' value", Toast.LENGTH_SHORT).show();        }
+            Toast.makeText(this, "Problem finding these 'Key' values", Toast.LENGTH_SHORT).show();        }
     }
 
     private String readFromFile() {
