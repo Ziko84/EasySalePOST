@@ -37,15 +37,22 @@
         android:text="@string/transfer_from_local_file_to_sqlite"
         android:textAllCaps="false"
         android:textColor="@color/textColor" />
-
     <Button
+        android:id="@+id/from_SQLite_to_rv_btn"
         android:layout_width="wrap_content"
-        android:layout_marginBottom="20dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/btn_style"
-        android:onClick="showPopup"
-        android:text="@string/show_pop_up"
+        android:text="@string/fetch_from_sqlite_db_to_recyclerview"
+        android:textAllCaps="false"
         android:textColor="@color/textColor" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
 
 
 </LinearLayout>

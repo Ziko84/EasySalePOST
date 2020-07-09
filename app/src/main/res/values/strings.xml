@@ -16,4 +16,10 @@
     <string name="get_json_using_asynctask">Get JSON Data Using AsyncTask</string>
     <string name="parse_the_json_data_from_above">Save The Data To Local JSON File</string>
     <string name="transfer_from_local_file_to_sqlite">Transfer From Local File To SQLite</string>
+    <string name="fetch_from_sqlite_db_to_recyclerview">Fetch From SQLite DB To RecyclerView</string>
+    <string name="name_tv">name_tv</string>
+    <string name="image_tv">image_tv</string>
+    <string name="quantity_tv">quantity_tv</string>
+    <string name="price_tv">price_tv</string>
+    <string name="item_image">Item Image</string>
 </resources>

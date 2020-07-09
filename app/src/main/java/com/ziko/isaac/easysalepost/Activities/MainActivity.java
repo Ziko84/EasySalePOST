@@ -1,9 +1,12 @@
 package com.ziko.isaac.easysalepost.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,6 +24,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.ziko.isaac.easysalepost.Adapters.EasySaleAdapter;
 import com.ziko.isaac.easysalepost.AsyncTask.Async;
 import com.ziko.isaac.easysalepost.Interfaces.AsyncResponse;
 import com.ziko.isaac.easysalepost.Model.EasySale;
@@ -42,8 +48,9 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private SQLiteDatabase mDatabase;
-    private Button retrieve_json_btn, parse_json_btn, transferToSQLite;
     private String jsonString;
+    private EasySaleAdapter adapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +58,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_main);
 
         //init Views and DB
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         EasySaleDBHelper easySaleDBHelper = new EasySaleDBHelper(this);
         mDatabase = easySaleDBHelper.getWritableDatabase();
-
+        recyclerView = findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Dialog myDialog = new Dialog(this);
-
-        retrieve_json_btn = findViewById(R.id.retrieve_json_btn);
-        parse_json_btn = findViewById(R.id.saveToFile);
-        transferToSQLite = findViewById(R.id.transferToSQLite);
-
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        Button retrieve_json_btn = findViewById(R.id.retrieve_json_btn);
+        Button parse_json_btn = findViewById(R.id.saveToFile);
+        Button transferToSQLite = findViewById(R.id.transferToSQLite);
+        Button from_SQLite_to_rv_btn = findViewById(R.id.from_SQLite_to_rv_btn);
 
         //onClickListeners.
         retrieve_json_btn.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +87,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             public void onClick(View view) { transferFromLocalFileToSQLiteDB();
             }
         });
+        from_SQLite_to_rv_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Cursor allItemsFromSQLiteDB = getAllItemsFromSQLiteDB();
+                setAdapter(allItemsFromSQLiteDB);
+            }
+        });
     }
 
     @Override
@@ -91,55 +106,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         Async async = new Async(this);
         async.delegate = this;
         async.execute();
-    }
-
-    private void saveLocalJsonFile() {
-        // Define the File Path and its Name
-        File file = new File(this.getFilesDir(), "easysale.json");
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(file);
-        } catch (IOException e) {
-            Toast.makeText(this, "There was a Problem creating the File", Toast.LENGTH_LONG).show();
-        }
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        try {
-            bufferedWriter.write(jsonString);
-            bufferedWriter.close();
-
-        } catch (IOException e) {
-            Toast.makeText(this, "Problem Writing Data to JSON File", Toast.LENGTH_LONG).show();
-        }
-        Toast.makeText(this, "Successfully Saved Data To JSON File", Toast.LENGTH_SHORT).show(); }
-
-    private void transferFromLocalFileToSQLiteDB() {
-        String item_name, picture_link;
-        int sale_nis, quantity;
-
-        //transfer from file to variables.
-        try {
-            String jsonFormat = readFromFile();
-            JSONObject jsonObject  = new JSONObject(jsonFormat);
-            JSONObject data = jsonObject.getJSONObject("data");
-            JSONArray item_list2 = data.getJSONArray("item_list");
-            for (int i = 0; i < item_list2.length(); i++) {
-                item_name = item_list2.getJSONObject(i).getString("item_name");
-                picture_link = item_list2.getJSONObject(i).getString("picture_link");
-                sale_nis = item_list2.getJSONObject(i).getInt("sale_nis");
-                quantity = item_list2.getJSONObject(i).getInt("quantity");
-
-                //Store in SQLite
-                ContentValues cv = new ContentValues();
-                cv.put(EasySaleContract.EasySaleEntry.COLUMN_NAME, item_name);
-                cv.put(EasySaleContract.EasySaleEntry.COLUMN_IMAGE, picture_link);
-                cv.put(EasySaleContract.EasySaleEntry.COLUMN_PRICE, sale_nis);
-                cv.put(EasySaleContract.EasySaleEntry.COLUMN_QUANTITY, quantity);
-
-                mDatabase.insert(EasySaleContract.EasySaleEntry.TABLE_NAME, null, cv);
-
-            }
-        } catch (JSONException e) {
-            Toast.makeText(this, "Problem finding these 'Key' values", Toast.LENGTH_SHORT).show();        }
     }
 
     private String readFromFile() {
@@ -168,20 +134,71 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         return stringBuilder.toString();
     }
 
- //    public void showPopup(View view) {
-//        TextView txtClose;
-//        Button btnFollow;
-//        myDialog.setContentView(R.layout.custom_popup);
-//        txtClose = myDialog.findViewById(R.id.close);
-//        btnFollow = myDialog.findViewById(R.id.follow_me);
-//
-//        txtClose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                myDialog.dismiss();
-//            }
-//        });
-//        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        myDialog.show();
-//    }
+    private void saveLocalJsonFile() {
+        // Define the File Path and its Name
+        File file = new File(this.getFilesDir(), "easysale.json");
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(file);
+        } catch (IOException e) {
+            Toast.makeText(this, "There was a Problem creating the File", Toast.LENGTH_LONG).show();
+        }
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        try {
+            bufferedWriter.write(jsonString);
+            bufferedWriter.close();
+
+        } catch (IOException e) {
+            Toast.makeText(this, "Problem Writing Data to JSON File", Toast.LENGTH_LONG).show();
+        }
+        Toast.makeText(this, "Successfully Saved Data To JSON File", Toast.LENGTH_SHORT).show();
+    }
+
+    private void transferFromLocalFileToSQLiteDB() {
+        String item_name, picture_link;
+        int sale_nis, quantity;
+
+        //transfer from file to variables.
+        try {
+            String jsonFormat = readFromFile();
+            JSONObject jsonObject = new JSONObject(jsonFormat);
+            JSONObject data = jsonObject.getJSONObject("data");
+            JSONArray item_list2 = data.getJSONArray("item_list");
+            for (int i = 0; i < item_list2.length(); i++) {
+                item_name = item_list2.getJSONObject(i).getString("item_name");
+                picture_link = item_list2.getJSONObject(i).getString("picture_link");
+                sale_nis = item_list2.getJSONObject(i).getInt("sale_nis");
+                quantity = item_list2.getJSONObject(i).getInt("quantity");
+
+                //Store in SQLite
+                ContentValues cv = new ContentValues();
+                cv.put(EasySaleContract.EasySaleEntry.COLUMN_NAME, item_name);
+                cv.put(EasySaleContract.EasySaleEntry.COLUMN_IMAGE, picture_link);
+                cv.put(EasySaleContract.EasySaleEntry.COLUMN_PRICE, sale_nis);
+                cv.put(EasySaleContract.EasySaleEntry.COLUMN_QUANTITY, quantity);
+
+                mDatabase.insert(EasySaleContract.EasySaleEntry.TABLE_NAME, null, cv);
+
+            }
+        } catch (JSONException e) { }
+        Toast.makeText(this, "Successfully Added Data To SQLite DB", Toast.LENGTH_SHORT).show();
+    }
+
+    private Cursor getAllItemsFromSQLiteDB(){
+        return mDatabase.query(
+                EasySaleContract.EasySaleEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                EasySaleContract.EasySaleEntry.COLUMN_PRICE + " DESC"
+        );
+    }
+
+    private void setAdapter(Cursor cursor){
+        recyclerView.setVisibility(View.VISIBLE);
+        adapter = new EasySaleAdapter(this, cursor);
+        recyclerView.setAdapter(adapter);
+    }
 }
