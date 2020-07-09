@@ -20,18 +20,27 @@
         android:textColor="@color/textColor" />
 
     <Button
-        android:id="@+id/parse_json_btn"
+        android:id="@+id/saveToFile"
         android:layout_width="wrap_content"
-        android:layout_marginBottom="20dp"
         android:layout_height="wrap_content"
-        android:textAllCaps="false"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/btn_style"
         android:text="@string/parse_the_json_data_from_above"
+        android:textAllCaps="false"
         android:textColor="@color/textColor" />
+    <Button
+        android:id="@+id/transferToSQLite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/btn_style"
+        android:text="@string/transfer_from_local_file_to_sqlite"
+        android:textAllCaps="false"
+        android:textColor="@color/textColor" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_marginBottom="20dp"
-
         android:layout_height="wrap_content"
         android:background="@drawable/btn_style"
         android:onClick="showPopup"

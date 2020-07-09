@@ -28,16 +28,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
-    Button retrieve_json_btn, parse_json_btn;
+    private Button retrieve_json_btn, parse_json_btn, transferToSQLite;
     private String jsonString;
-    private Dialog myDialog;
-    private RequestQueue mQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,29 +46,44 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_main);
 
         //init Views
-        myDialog = new Dialog(this);
+        Dialog myDialog = new Dialog(this);
+
         retrieve_json_btn = findViewById(R.id.retrieve_json_btn);
-        parse_json_btn = findViewById(R.id.parse_json_btn);
-        mQueue = Volley.newRequestQueue(getApplicationContext());
+        parse_json_btn = findViewById(R.id.saveToFile);
+        transferToSQLite = findViewById(R.id.transferToSQLite);
+
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
 
         //onClickListeners.
         retrieve_json_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { retrieveJsonDataAsync();
+            public void onClick(View view) {
+                retrieveJsonDataAsync();
             }
         });
-
         parse_json_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createLocalJsonFile();
+                saveLocalJsonFile();
+            }
+        });
+        transferToSQLite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                transferFromLocalFileToSQLiteDB();
             }
         });
     }
 
-    private void createLocalJsonFile() {
+    private void retrieveJsonDataAsync() {
+        Async async = new Async(this);
+        async.delegate = this;
+        async.execute();
+    }
+
+    private void saveLocalJsonFile() {
         // Define the File Path and its Name
-        File file = new File(this.getFilesDir(),"easysale.json");
+        File file = new File(this.getFilesDir(), "easysale.json");
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(file);
@@ -80,15 +96,57 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             bufferedWriter.close();
 
         } catch (IOException e) {
-            Toast.makeText(this, "Problem Writing Data to JSON File", Toast.LENGTH_LONG).show();        }
+            Toast.makeText(this, "Problem Writing Data to JSON File", Toast.LENGTH_LONG).show();
+        }
+        Toast.makeText(this, "Successfully Saved Data To JSON File", Toast.LENGTH_SHORT).show(); }
 
+    private void transferFromLocalFileToSQLiteDB() {
+
+        try {
+            String jsonFormat = readFromFile();
+            JSONObject jsonObject  = new JSONObject(jsonFormat);
+            JSONObject data = jsonObject.getJSONObject("data");
+            JSONArray item_list2 = data.getJSONArray("item_list");
+            for (int i = 0; i < item_list2.length(); i++) {
+
+                String item_name = item_list2.getJSONObject(i).getString("item_name");
+                String item_extended_description = item_list2.getJSONObject(i).getString("item_extended_description");
+                String picture_link = item_list2.getJSONObject(i).getString("picture_link");
+                int sale_nis = item_list2.getJSONObject(i).getInt("sale_nis");
+                int quantity = item_list2.getJSONObject(i).getInt("quantity");
+
+
+            }
+
+
+        } catch (JSONException e) {
+            Toast.makeText(this, "Problem finding this 'Key' value", Toast.LENGTH_SHORT).show();        }
     }
 
+    private String readFromFile() {
+        File file = new File(this.getFilesDir(), "easysale.json");
+        FileReader fileReader = null;
+        try {
+            fileReader = new FileReader(file);
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, "File Not Found :(", Toast.LENGTH_SHORT).show();
+        }
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = null;
+        try {
+            line = bufferedReader.readLine();
+            while (line != null) {
+                stringBuilder.append(line).append("\n");
+                line = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            Toast.makeText(this, "Was a problem reading from the File", Toast.LENGTH_SHORT).show();
+        }
 
-    private void retrieveJsonDataAsync() {
-        Async async = new Async(this);
-        async.delegate = this;
-        async.execute();
+        //Json Format String
+        return stringBuilder.toString();
     }
 
     @Override
