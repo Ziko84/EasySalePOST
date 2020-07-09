@@ -13,4 +13,6 @@
     <string name="cities">Cities</string>
     <string name="_19">19</string>
     <string name="image_of_the_uer">Image of the uer</string>
+    <string name="get_json_using_asynctask">Get JSON Data Using AsyncTask</string>
+    <string name="parse_the_json_data_from_above">Parse The JSON Data From Above</string>
 </resources>
