@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -55,31 +56,44 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Dialog myDialog = new Dialog(this);
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-        Button retrieve_json_btn = findViewById(R.id.retrieve_json_btn);
-        Button parse_json_btn = findViewById(R.id.saveToFile);
-        Button transferToSQLite = findViewById(R.id.transferToSQLite);
-        Button from_SQLite_to_rv_btn = findViewById(R.id.from_SQLite_to_rv_btn);
+        final Button retrieve_json_btn = findViewById(R.id.retrieve_json_btn);
+        final Button parse_json_btn = findViewById(R.id.saveToFile);
+        final Button transferToSQLite = findViewById(R.id.transferToSQLite);
+        final Button from_SQLite_to_rv_btn = findViewById(R.id.from_SQLite_to_rv_btn);
 
         //onClickListeners.
         retrieve_json_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { retrieveJsonDataAsync();
+            public void onClick(View view) {
+                retrieve_json_btn.setAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.translate_animation));
+                retrieve_json_btn.setVisibility(View.INVISIBLE);
+                retrieveJsonDataAsync();
             }
         });
         parse_json_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                parse_json_btn.setAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.translate_animation));
+                parse_json_btn.setVisibility(View.INVISIBLE);
                 saveLocalJsonFile();
             }
         });
         transferToSQLite.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { transferFromLocalFileToSQLiteDB();
+            public void onClick(View view) {
+                transferToSQLite.setAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.translate_animation));
+                transferToSQLite.setVisibility(View.INVISIBLE);
+                transferFromLocalFileToSQLiteDB();
             }
         });
         from_SQLite_to_rv_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                from_SQLite_to_rv_btn.setAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.translate_animation));
+                retrieve_json_btn.setVisibility(View.GONE);
+                transferToSQLite.setVisibility(View.GONE);
+                parse_json_btn.setVisibility(View.GONE);
+                from_SQLite_to_rv_btn.setVisibility(View.GONE);
                 Cursor allItemsFromSQLiteDB = getAllItemsFromSQLiteDB();
                 setAdapter(allItemsFromSQLiteDB);
             }

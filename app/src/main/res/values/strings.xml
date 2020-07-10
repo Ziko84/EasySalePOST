@@ -22,4 +22,13 @@
     <string name="quantity_tv">quantity_tv</string>
     <string name="price_tv">price_tv</string>
     <string name="item_image">Item Image</string>
+    <string name="item_name_two">Item Name</string>
+    <string name="quantity_three">Quantity</string>
+    <string name="add_to_cart">Add To Cart</string>
+    <string name="next_item">Next Item</string>
+    <string name="detailed_item_image">Detailed Item Image</string>
+    <string name="price_three">Price</string>
+    <string name="UNITS">יחידות 25</string>
+    <string name="פRICING">35.24 ₪</string>
+    <string name="PRODUCT_NAME">שם המוצר</string>
 </resources>

@@ -1,10 +1,14 @@
 package com.ziko.isaac.easysalepost.Adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,6 +26,7 @@ import com.ziko.isaac.easysalepost.SQLite.EasySaleContract;
 public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySaleViewHolder> {
     private Context mContext;
     private Cursor mCursor;
+    private int quantity = 0;
 
     public EasySaleAdapter(Context context, Cursor cursor) {
         this.mContext = context;
@@ -31,8 +36,33 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
     @NonNull
     @Override
     public EasySaleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new EasySaleViewHolder(LayoutInflater.from(mContext)
-                .inflate(R.layout.single_row_item, parent, false));
+        View v = LayoutInflater.from(mContext).inflate(R.layout.single_row_item, parent, false);
+        EasySaleViewHolder easySaleViewHolder = new EasySaleViewHolder(v);
+        //Dialog init
+        final Dialog details_dialog = new Dialog(mContext);
+        details_dialog.setContentView(R.layout.item_dialog);
+        Window window = details_dialog.getWindow();
+        if(window!=null){
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));}
+
+        easySaleViewHolder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TextView dialog_name = details_dialog.findViewById(R.id.dialog_name);
+                TextView dialog_quantity = details_dialog.findViewById(R.id.dialog_quantity);
+                TextView dialog_price = details_dialog.findViewById(R.id.dialog_price);
+                ImageView dialog_image = details_dialog.findViewById(R.id.dialog_image);
+                dialog_name.setText(R.string.PRODUCT_NAME);
+                dialog_quantity.setText(R.string.UNITS);
+                dialog_price.setText(R.string.פRICING);
+                Picasso.get().load(R.drawable.circlecropped3).fit().centerInside().into(dialog_image);
+                details_dialog.show();
+
+            }
+        });
+        return easySaleViewHolder;
+
+
     }
 
     @Override
@@ -56,7 +86,7 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
 
         //set data to views
         holder.name.setText(name);
-        holder.price.setText(String.valueOf(price + "₪"));
+        holder.price.setText(String.valueOf(price + " ₪ "));
         holder.quantity.setText(String.valueOf(quantity + " יחידות במלאי "));
 
         if(!url.isEmpty()&& !url.equals("null")){
@@ -65,6 +95,8 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
             holder.item_iv.setImageResource(R.drawable.not_a);
             Toast.makeText(mContext, "Detected an item without an image", Toast.LENGTH_SHORT).show();
         }
+
+
 
 
     }
@@ -78,6 +110,7 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
         public TextView name, price, quantity;
         public ImageView item_iv;
         public RelativeLayout container;
+
 
         public EasySaleViewHolder(@NonNull View itemView) {
             super(itemView);
