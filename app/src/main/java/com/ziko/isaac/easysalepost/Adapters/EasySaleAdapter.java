@@ -1,5 +1,6 @@
 package com.ziko.isaac.easysalepost.Adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,12 +14,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 import com.ziko.isaac.easysalepost.R;
 import com.ziko.isaac.easysalepost.SQLite.EasySaleContract;
@@ -26,7 +25,6 @@ import com.ziko.isaac.easysalepost.SQLite.EasySaleContract;
 public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySaleViewHolder> {
     private Context mContext;
     private Cursor mCursor;
-    private int quantity = 0;
 
     public EasySaleAdapter(Context context, Cursor cursor) {
         this.mContext = context;
@@ -66,6 +64,7 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull EasySaleViewHolder holder, int position) {
 
@@ -91,8 +90,8 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
         //set data to views
         holder.itemView.setTag(id);
         holder.name.setText(name);
-        holder.price.setText(String.valueOf(price + " ₪ "));
-        holder.quantity.setText(String.valueOf(quantity + " יחידות "));
+        holder.price.setText(price + " ₪ ");
+        holder.quantity.setText(quantity + " יחידות ");
 
         if (!url.isEmpty() && !url.equals("null")) {
             Picasso.get().load(url).fit().centerInside().into(holder.item_iv);
@@ -108,22 +107,11 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
         return mCursor.getCount();
     }
 
-    public void swapCursor(Cursor newCursor) {
-        if (mCursor != null) {
-            mCursor.close();
-        }
-        mCursor = newCursor;
-        if (newCursor != null) {
-            notifyDataSetChanged();
-
-        }
-    }
-
     public static class EasySaleViewHolder extends RecyclerView.ViewHolder {
+
         public TextView name, price, quantity;
         public ImageView item_iv;
         public RelativeLayout container;
-
 
         public EasySaleViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -132,6 +120,18 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
             name = itemView.findViewById(R.id.name_tv);
             price = itemView.findViewById(R.id.price_tv);
             quantity = itemView.findViewById(R.id.quantity_tv);
+        }
+
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+        mCursor = newCursor;
+        if (newCursor != null) {
+            notifyDataSetChanged();
+
         }
     }
 }

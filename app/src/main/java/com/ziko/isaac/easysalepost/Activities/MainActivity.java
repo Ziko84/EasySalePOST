@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,8 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.ziko.isaac.easysalepost.Adapters.EasySaleAdapter;
@@ -56,8 +54,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         mDatabase = easySaleDBHelper.getWritableDatabase();
         recyclerView = findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Dialog myDialog = new Dialog(this);
-        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
         final Button retrieve_json_btn = findViewById(R.id.retrieve_json_btn);
         final Button parse_json_btn = findViewById(R.id.saveToFile);
         final Button transferToSQLite = findViewById(R.id.transferToSQLite);
@@ -75,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         parse_json_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 parse_json_btn.setAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.translate_animation));
                 parse_json_btn.setVisibility(View.INVISIBLE);
                 saveLocalJsonFile();
@@ -124,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         }
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         StringBuilder stringBuilder = new StringBuilder();
-        String line = null;
+        String line;
         try {
             line = bufferedReader.readLine();
             while (line != null) {
@@ -186,11 +183,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 mDatabase.insert(EasySaleContract.EasySaleEntry.TABLE_NAME, null, cv);
 
             }
-        } catch (JSONException e) { }
+        } catch (JSONException e) {
+        }
         Toast.makeText(this, "Successfully Added Data To SQLite DB", Toast.LENGTH_SHORT).show();
     }
 
-    private Cursor getAllItemsFromSQLiteDB(){
+    private Cursor getAllItemsFromSQLiteDB() {
         return mDatabase.query(
                 EasySaleContract.EasySaleEntry.TABLE_NAME,
                 null,
@@ -202,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         );
     }
 
-    private void setAdapter(Cursor cursor){
+    private void setAdapter(Cursor cursor) {
         recyclerView.setVisibility(View.VISIBLE);
         adapter = new EasySaleAdapter(this, cursor);
         recyclerView.setAdapter(adapter);
@@ -216,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
-                removeItem((long)viewHolder.itemView.getTag());
+                removeItem((long) viewHolder.itemView.getTag());
 
             }
         }).attachToRecyclerView(recyclerView);

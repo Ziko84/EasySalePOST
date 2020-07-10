@@ -31,4 +31,5 @@
     <string name="UNITS">יחידות 25</string>
     <string name="פRICING">35.24 ₪</string>
     <string name="PRODUCT_NAME">שם המוצר</string>
+    <string name="shekel">₪</string>
 </resources>
