@@ -1,6 +1,8 @@
 package com.ziko.isaac.easysalepost.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -204,5 +206,24 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         recyclerView.setVisibility(View.VISIBLE);
         adapter = new EasySaleAdapter(this, cursor);
         recyclerView.setAdapter(adapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+                removeItem((long)viewHolder.itemView.getTag());
+
+            }
+        }).attachToRecyclerView(recyclerView);
+    }
+
+    private void removeItem(long id) {
+        mDatabase.delete(EasySaleContract.EasySaleEntry.TABLE_NAME, EasySaleContract.EasySaleEntry._ID + "=" + id, null);
+        adapter.swapCursor(getAllItemsFromSQLiteDB());
     }
 }

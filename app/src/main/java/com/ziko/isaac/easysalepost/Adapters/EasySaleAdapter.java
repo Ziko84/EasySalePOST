@@ -42,8 +42,9 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
         final Dialog details_dialog = new Dialog(mContext);
         details_dialog.setContentView(R.layout.item_dialog);
         Window window = details_dialog.getWindow();
-        if(window!=null){
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));}
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
 
         easySaleViewHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,41 +70,53 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
     public void onBindViewHolder(@NonNull EasySaleViewHolder holder, int position) {
 
         //animations
-        holder.item_iv.setAnimation(AnimationUtils.loadAnimation(mContext,  R.anim.fade_translate));
+        holder.item_iv.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_translate));
         holder.container.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale));
 
         //extract to variables
-        if(!mCursor.moveToPosition(position)){
+        if (!mCursor.moveToPosition(position)) {
             return;
         }
         String name = mCursor.getString(mCursor.getColumnIndex(EasySaleContract.EasySaleEntry.COLUMN_NAME));
         String url = mCursor.getString(mCursor.getColumnIndex(EasySaleContract.EasySaleEntry.COLUMN_IMAGE));
         int price = mCursor.getInt(mCursor.getColumnIndex(EasySaleContract.EasySaleEntry.COLUMN_PRICE));
         int quantity = mCursor.getInt(mCursor.getColumnIndex(EasySaleContract.EasySaleEntry.COLUMN_QUANTITY));
-        if (quantity<0){
-            quantity=0;
+        if (quantity < 0) {
+            quantity = 0;
         }
+
+        //get id for swipe to delete mehod
+        long id = mCursor.getLong(mCursor.getColumnIndex(EasySaleContract.EasySaleEntry._ID));
 
         //set data to views
+        holder.itemView.setTag(id);
         holder.name.setText(name);
         holder.price.setText(String.valueOf(price + " ₪ "));
-        holder.quantity.setText(String.valueOf(quantity + " יחידות במלאי "));
+        holder.quantity.setText(String.valueOf(quantity + " יחידות "));
 
-        if(!url.isEmpty()&& !url.equals("null")){
+        if (!url.isEmpty() && !url.equals("null")) {
             Picasso.get().load(url).fit().centerInside().into(holder.item_iv);
-        } else{
+        } else {
             holder.item_iv.setImageResource(R.drawable.not_a);
-            Toast.makeText(mContext, "Detected an item without an image", Toast.LENGTH_SHORT).show();
         }
-
-
 
 
     }
 
     @Override
     public int getItemCount() {
-       return mCursor.getCount();
+        return mCursor.getCount();
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+        mCursor = newCursor;
+        if (newCursor != null) {
+            notifyDataSetChanged();
+
+        }
     }
 
     public static class EasySaleViewHolder extends RecyclerView.ViewHolder {
