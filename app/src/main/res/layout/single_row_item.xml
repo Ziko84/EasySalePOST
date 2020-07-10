@@ -1,43 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
+    android:layout_gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="5dp">
 
+    <RelativeLayout
+
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/card_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:fontFamily="sans-serif-black"
+            android:id="@+id/name_tv"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/name_tv"
+            android:textColor="@color/textColor"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/quantity_tv"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/name_tv"
+            android:layout_marginStart="50dp"
+            android:layout_marginBottom="7dp"
+            android:text="@string/quantity_tv"
+            android:textColor="@color/textColor" />
+
+
+        <TextView
+            android:id="@+id/price_tv"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/price_tv"
+            android:textColor="@color/textColor" />
+
+
+    </RelativeLayout>
+
     <ImageView
-        android:layout_margin="5dp"
+
         android:id="@+id/item_iv"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/circlecropped3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:contentDescription="@string/item_image"
-        />
-
-    <TextView
-        android:gravity="center_horizontal"
-        android:id="@+id/name_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/name_tv"
-        android:textColor="@color/textColor"/>
+        app:layout_constraintBottom_toBottomOf="@+id/container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/container"
+        android:src="@drawable/not_a" />
 
 
-    <TextView
-        android:gravity="center_horizontal"
-        android:id="@+id/price_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/quantity_tv"
-        android:textColor="@color/textColor"/>
-
-    <TextView
-        android:gravity="center_horizontal"
-        android:id="@+id/quantity_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/price_tv"
-        android:textColor="@color/textColor"/>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

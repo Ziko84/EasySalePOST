@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,10 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
     @Override
     public void onBindViewHolder(@NonNull EasySaleViewHolder holder, int position) {
 
+        //animations
+        holder.item_iv.setAnimation(AnimationUtils.loadAnimation(mContext,  R.anim.fade_translate));
+        holder.container.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale));
+
         //extract to variables
         if(!mCursor.moveToPosition(position)){
             return;
@@ -44,11 +50,14 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
         String url = mCursor.getString(mCursor.getColumnIndex(EasySaleContract.EasySaleEntry.COLUMN_IMAGE));
         int price = mCursor.getInt(mCursor.getColumnIndex(EasySaleContract.EasySaleEntry.COLUMN_PRICE));
         int quantity = mCursor.getInt(mCursor.getColumnIndex(EasySaleContract.EasySaleEntry.COLUMN_QUANTITY));
+        if (quantity<0){
+            quantity=0;
+        }
 
         //set data to views
         holder.name.setText(name);
-        holder.price.setText(String.valueOf(price));
-        holder.quantity.setText(String.valueOf(quantity));
+        holder.price.setText(String.valueOf(price + "₪"));
+        holder.quantity.setText(String.valueOf(quantity + " יחידות במלאי "));
 
         if(!url.isEmpty()&& !url.equals("null")){
             Picasso.get().load(url).fit().centerInside().into(holder.item_iv);
@@ -68,9 +77,11 @@ public class EasySaleAdapter extends RecyclerView.Adapter<EasySaleAdapter.EasySa
     public static class EasySaleViewHolder extends RecyclerView.ViewHolder {
         public TextView name, price, quantity;
         public ImageView item_iv;
+        public RelativeLayout container;
 
         public EasySaleViewHolder(@NonNull View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.container);
             item_iv = itemView.findViewById(R.id.item_iv);
             name = itemView.findViewById(R.id.name_tv);
             price = itemView.findViewById(R.id.price_tv);
